@@ -78,7 +78,7 @@ public class ProductoController {
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@PutMapping("/actualizar/{id}")
+	@PutMapping("/actualizar/{id}") 
 	public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody ProductoDto productoDto) {
 
 		if (!productoService.existsById(id))
