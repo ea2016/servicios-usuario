@@ -1,5 +1,6 @@
 package com.easj.security.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,14 @@ public class UsuarioService {
 
 	public Optional<Usuario> getByNombreUsuario(String nombreUsuario) {
 		return usuarioRepository.findByNombreUsuario(nombreUsuario);
+	}
+	
+	public boolean existsById(int id) {
+		return usuarioRepository.existsById(id);
+	}
+	
+	public List<Usuario> list(){
+		return usuarioRepository.findAll();
 	}
 
 	public boolean existeByNombreUsuario(String nombreUsuario) {

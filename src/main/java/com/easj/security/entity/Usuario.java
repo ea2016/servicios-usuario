@@ -29,7 +29,13 @@ public class Usuario {
 	private String email;
 	@NotNull
 	private String password;
-
+	@NotNull
+	private boolean sesion;
+	@NotNull
+	private boolean usuarioActivo;
+	@NotNull
+	private boolean primeraVez;
+	
 	@NotNull
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
@@ -94,4 +100,29 @@ public class Usuario {
 		this.roles = roles;
 	}
 
+	public boolean getSesion() {
+		return sesion;
+	}
+
+	public void setSesion(boolean sesion) {
+		this.sesion = sesion;
+	}
+
+	public boolean isUsuarioActivo() {
+		return usuarioActivo;
+	}
+
+	public void setUsuarioActivo(boolean usuarioActivo) {
+		this.usuarioActivo = usuarioActivo;
+	}
+
+	public boolean isPrimeraVez() {
+		return primeraVez;
+	}
+
+	public void setPrimeraVez(boolean primeraVez) {
+		this.primeraVez = primeraVez;
+	}
+	
+	
 }
