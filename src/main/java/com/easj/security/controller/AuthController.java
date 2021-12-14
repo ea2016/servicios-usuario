@@ -35,6 +35,7 @@ import com.easj.security.entity.Usuario;
 import com.easj.security.enums.RolNombre;
 import com.easj.security.jwt.JwtProvider;
 import com.easj.security.service.RolService;
+import com.easj.security.service.SendMailService;
 import com.easj.security.service.UsuarioService;
 
 @RestController
@@ -56,6 +57,9 @@ public class AuthController {
 
 	@Autowired
 	JwtProvider jwtProvider;
+	
+	@Autowired
+	private SendMailService sendMailService;
 	
 	@GetMapping("/lista")
 	public ResponseEntity<List<Usuario>> list() {
@@ -93,8 +97,13 @@ public class AuthController {
 	} 
 	
 	@PostMapping("/forgotPasswod")
-	public ResponseEntity<JwtDto> forgotPasswod(@Valid @RequestBody Usuario usuario, BindingResult bindingResult){
+	public ResponseEntity<JwtDto> forgotPasswod(@Valid @RequestBody String correo, BindingResult bindingResult){
 		
+		if (bindingResult.hasErrors())
+			return new ResponseEntity(new Mensaje("campos mal puesto o email invalido"), HttpStatus.BAD_REQUEST);
+		
+		String mensaje="Esto es una prueba de envio de correo";
+		sendMailService.sendMail ("enriquesuarez1991@gmail.com", "prueba", mensaje);
 		return new ResponseEntity(new Mensaje("clave enviada"),HttpStatus.CREATED);
 	}
 	
