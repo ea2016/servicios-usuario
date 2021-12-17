@@ -96,14 +96,23 @@ public class AuthController {
 		
 	} 
 	
+	@GetMapping("/resetPasswod")
+	public ResponseEntity<JwtDto> resetPasswod(@Valid @RequestBody String correo, BindingResult bindingResult){
+		
+		if (bindingResult.hasErrors())
+			return new ResponseEntity(new Mensaje("campos mal puesto o email invalido"), HttpStatus.BAD_REQUEST);
+		
+		sendMailService.sendMail (correo);
+		return new ResponseEntity(new Mensaje("clave enviada"),HttpStatus.CREATED);
+	}
+	
 	@PostMapping("/forgotPasswod")
 	public ResponseEntity<JwtDto> forgotPasswod(@Valid @RequestBody String correo, BindingResult bindingResult){
 		
 		if (bindingResult.hasErrors())
 			return new ResponseEntity(new Mensaje("campos mal puesto o email invalido"), HttpStatus.BAD_REQUEST);
 		
-		String mensaje="Esto es una prueba de envio de correo";
-		sendMailService.sendMail ("enriquesuarez1991@gmail.com", "prueba", mensaje);
+		sendMailService.sendMail (correo);
 		return new ResponseEntity(new Mensaje("clave enviada"),HttpStatus.CREATED);
 	}
 	
