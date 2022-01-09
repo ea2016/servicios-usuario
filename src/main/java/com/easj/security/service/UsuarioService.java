@@ -32,10 +32,6 @@ public class UsuarioService {
 	public boolean existeByNombreUsuario(String nombreUsuario) {
 		return usuarioRepository.existsByNombreUsuario(nombreUsuario);
 	}
-
-	public boolean existeByEmail(String email) {
-		return usuarioRepository.existsByEmail(email);
-	}
 	
 	public void save (Usuario usuario) {
 		usuarioRepository.save(usuario);

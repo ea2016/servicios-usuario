@@ -21,22 +21,22 @@ public class Usuario {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@NotNull
-	private String nombre;
-	@NotNull
 	@Column(unique = true)
 	private String nombreUsuario;
 	@NotNull
-	private String email;
-	@NotNull
 	private String password;
-	@NotNull
-	private boolean sesion;
-	@NotNull
-	private boolean usuarioActivo;
-	@NotNull
-	private boolean primeraVez;
 	
+	private boolean sesion;
+	private boolean usuarioActivo;
+	private boolean primeraVez;
 	private String codigoReinicio;
+	private String nombre;
+	private String telefono;
+	private String direccion;
+	private String municipio;
+	private String provincia;
+	private String codigo_postal;
+	private String rif;
 	
 	@NotNull
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -46,12 +46,19 @@ public class Usuario {
 	public Usuario() {
 	}
 
-	public Usuario(@NotNull String nombre, @NotNull String nombreUsuario, @NotNull String email,
-			@NotNull String password) {
-		this.nombre = nombre;
+	public Usuario(@NotNull String nombreUsuario, @NotNull String nombre,
+			@NotNull String telefono,@NotNull String direccion,@NotNull String municipio,@NotNull String provincia,
+			@NotNull String codigo_postal,@NotNull String rif, @NotNull String password) {
 		this.nombreUsuario = nombreUsuario;
-		this.email = email;
+		this.nombre = nombre;
+		this.telefono = telefono;
+		this.direccion = direccion;
+		this.municipio = municipio;
+		this.provincia = provincia;
+		this.codigo_postal = codigo_postal;
+		this.rif = rif;
 		this.password = password;
+		
 	}
 
 	public int getId() {
@@ -76,14 +83,6 @@ public class Usuario {
 
 	public void setNombreUsuario(String nombreUsuario) {
 		this.nombreUsuario = nombreUsuario;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public String getPassword() {
@@ -118,7 +117,7 @@ public class Usuario {
 		this.usuarioActivo = usuarioActivo;
 	}
 
-	public boolean isPrimeraVez() {
+	public boolean getPrimeraVez() {
 		return primeraVez;
 	}
 
@@ -134,11 +133,52 @@ public class Usuario {
 		this.codigoReinicio = codigoReinicio;
 	}
 
-	@Override
-	public String toString() {
-		return "Usuario [id=" + id + ", nombre=" + nombre + ", nombreUsuario=" + nombreUsuario + ", email=" + email
-				+ ", password=" + password + ", sesion=" + sesion + ", usuarioActivo=" + usuarioActivo + ", primeraVez="
-				+ primeraVez + ", codigoReinicio=" + codigoReinicio + ", roles=" + roles + "]";
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public String getMunicipio() {
+		return municipio;
+	}
+
+	public void setMunicipio(String municipio) {
+		this.municipio = municipio;
+	}
+
+	public String getProvincia() {
+		return provincia;
+	}
+
+	public void setProvincia(String provincia) {
+		this.provincia = provincia;
+	}
+
+	public String getCodigo_postal() {
+		return codigo_postal;
+	}
+
+	public void setCodigo_postal(String codigo_postal) {
+		this.codigo_postal = codigo_postal;
+	}
+
+	public String getRif() {
+		return rif;
+	}
+
+	public void setRif(String rif) {
+		this.rif = rif;
 	}
 	
 	

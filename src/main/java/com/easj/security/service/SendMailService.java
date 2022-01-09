@@ -21,13 +21,13 @@ public class SendMailService {
 			
 			String mensaje = "";
 			if (nuevoUsuario) {
-				mensaje=mensajeNuevoUsuario();
+				mensaje=mensajeNuevoUsuario(valorEntero);
 			}else {
 				mensaje=mensajeRecuperarContraseña(valorEntero);
 			}
 			MimeMessage message = mailSender.createMimeMessage();
 			message.setFrom("administracion@alyhouse.com");
-			message.setSubject("recuperar contraseña");
+			message.setSubject("alyhouse");
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			message.setContent(mensaje, "text/html");
 			mailSender.send(message);
@@ -37,11 +37,12 @@ public class SendMailService {
 		return String.valueOf(valorEntero);
 	}
 	
-	private String mensajeNuevoUsuario() {
+	private String mensajeNuevoUsuario(int valorEntero) {
 		
 		return "<h2>BIENVENIDO A OLYHOUSE</h2>"
 		+ "<h3>activar cuenta</h3> \n"
-		+ "<h3>instroduzca el siguiente codigo para activar la cuenta</h3> \n";
+		+ "<h3>Introduzca el siguiente codigo para activar la cuenta</h3> \n"
+		+ "<h1>"+valorEntero+"</h1>";
 	}
 	
 	private String mensajeRecuperarContraseña(int valorEntero) {

@@ -9,6 +9,7 @@ C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\reposito
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\service\RolService.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\jwt\JwtTokenFilter.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\MainSecurity.java
+C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\repository\UsuarioRolRepository.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\repository\RolRepository.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\jwt\JwtProvider.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\service\ProductoService.java
@@ -16,7 +17,10 @@ C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\service\UsuarioService.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\service\UserDetailsServiceImpl.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\dto\ProductoDto.java
+C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\dto\ActualizarUsuario.java
+C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\entity\UsuarioRol.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\entity\Rol.java
+C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\service\UsuarioRolService.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\dto\Mensaje.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\entity\Producto.java
 C:\Users\kike\Documents\git\servicios-residencia\src\main\java\com\easj\security\entity\Usuario.java

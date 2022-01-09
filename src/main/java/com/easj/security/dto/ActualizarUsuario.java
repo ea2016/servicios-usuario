@@ -1,12 +1,13 @@
 package com.easj.security.dto;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-public class NuevoUsuario {
+public class ActualizarUsuario {
 
 	@NotBlank
+	private int idUsuario;
+	@Email
 	private String nombreUsuario;
 	@NotBlank
 	private String password;
@@ -21,11 +22,17 @@ public class NuevoUsuario {
 	
 	private String provincia;
 	
-	private String codigoPostal;
+	private String codigo_postal;
 	
 	private String rif;
 	
-	private Set<String> roles = new HashSet<>();
+	public int getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(int idUsuario) {
+		this.idUsuario = idUsuario;
+	}
 
 	public String getNombreUsuario() {
 		return nombreUsuario;
@@ -84,11 +91,11 @@ public class NuevoUsuario {
 	}
 
 	public String getCodigo_postal() {
-		return codigoPostal;
+		return codigo_postal;
 	}
 
 	public void setCodigo_postal(String codigo_postal) {
-		this.codigoPostal = codigo_postal;
+		this.codigo_postal = codigo_postal;
 	}
 
 	public String getRif() {
@@ -98,23 +105,4 @@ public class NuevoUsuario {
 	public void setRif(String rif) {
 		this.rif = rif;
 	}
-
-	public Set<String> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(Set<String> roles) {
-		this.roles = roles;
-	}
-
-	public String getCodigoPostal() {
-		return codigoPostal;
-	}
-
-	public void setCodigoPostal(String codigoPostal) {
-		this.codigoPostal = codigoPostal;
-	}
-	
-	
-
 }
