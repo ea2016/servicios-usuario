@@ -40,5 +40,13 @@ public class UsuarioService {
 	public void save (Usuario usuario) {
 		usuarioRepository.save(usuario);
 	}
+	
+	public void actualizar (Usuario usuario) {
+		usuarioRepository.save(usuario);
+	}
+	
+	public void borrar (Usuario usuario) {
+		usuarioRepository.delete(usuario);
+	}
 
 }

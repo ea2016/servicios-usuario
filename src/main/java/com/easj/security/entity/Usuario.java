@@ -36,6 +36,8 @@ public class Usuario {
 	@NotNull
 	private boolean primeraVez;
 	
+	private String codigoReinicio;
+	
 	@NotNull
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
@@ -122,6 +124,21 @@ public class Usuario {
 
 	public void setPrimeraVez(boolean primeraVez) {
 		this.primeraVez = primeraVez;
+	}
+
+	public String getCodigoReinicio() {
+		return codigoReinicio;
+	}
+
+	public void setCodigoReinicio(String codigoReinicio) {
+		this.codigoReinicio = codigoReinicio;
+	}
+
+	@Override
+	public String toString() {
+		return "Usuario [id=" + id + ", nombre=" + nombre + ", nombreUsuario=" + nombreUsuario + ", email=" + email
+				+ ", password=" + password + ", sesion=" + sesion + ", usuarioActivo=" + usuarioActivo + ", primeraVez="
+				+ primeraVez + ", codigoReinicio=" + codigoReinicio + ", roles=" + roles + "]";
 	}
 	
 	

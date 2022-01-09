@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class NuevoUsuario {
 
 	@NotBlank
@@ -16,6 +18,7 @@ public class NuevoUsuario {
 	private String email;
 	@NotBlank
 	private String password;
+	
 	private Set<String> roles = new HashSet<>();
 
 	public String getNombre() {
