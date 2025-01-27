@@ -25,14 +25,6 @@ POST /auth/recuperar: Envía un código de recuperación al correo del usuario.*
     private AuthService authService;
 
     /**
-     * Registrar un usuario
-     */
-    @PostMapping("/register")
-    public ResponseEntity<?> registrar(@RequestBody Usuario usuario) {
-        return ResponseEntity.ok(authService.registrarUsuario(usuario));
-    }
-
-    /**
      * Login: Autenticar y generar JWT
      */
     @PostMapping("/login")
@@ -44,7 +36,7 @@ POST /auth/recuperar: Envía un código de recuperación al correo del usuario.*
     /**
      * Listar todos los usuarios
      */
-    @GetMapping("/usuarios")
+    @GetMapping("/listar")
     public ResponseEntity<List<Usuario>> listarUsuarios() {
         return ResponseEntity.ok(authService.listarUsuarios());
     }
@@ -52,7 +44,7 @@ POST /auth/recuperar: Envía un código de recuperación al correo del usuario.*
     /**
      * Agregar un nuevo usuario
      */
-    @PostMapping("/usuarios")
+    @PostMapping("/agregar")
     public ResponseEntity<?> agregarUsuario(@RequestBody Usuario usuario) {
         return ResponseEntity.ok(authService.registrarUsuario(usuario));
     }
@@ -60,7 +52,7 @@ POST /auth/recuperar: Envía un código de recuperación al correo del usuario.*
     /**
      * Modificar un usuario existente
      */
-    @PutMapping("/usuarios/{id}")
+    @PutMapping("/modificar/{id}")
     public ResponseEntity<?> modificarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioActualizado) {
         return ResponseEntity.ok(authService.modificarUsuario(id, usuarioActualizado));
     }
@@ -68,7 +60,7 @@ POST /auth/recuperar: Envía un código de recuperación al correo del usuario.*
     /**
      * Eliminar un usuario
      */
-    @DeleteMapping("/usuarios/{id}")
+    @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
         authService.eliminarUsuario(id);
         return ResponseEntity.ok("Usuario eliminado con éxito");

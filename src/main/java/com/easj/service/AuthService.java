@@ -1,5 +1,6 @@
 package com.easj.service;
 
+import com.easj.exception.UsuarioExistenteException;
 import com.easj.model.Usuario;
 import com.easj.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,50 @@ public class AuthService {
     private UsuarioRepository usuarioRepository;
 
     public Usuario registrarUsuario(Usuario usuario) {
-        // Lógica para registrar un usuario
+        // Validar campos obligatorios
+        if (usuario.getNombreUsuario() == null || usuario.getNombreUsuario().isBlank()) {
+            throw new RuntimeException("El nombre de usuario es obligatorio.");
+        }
+        if (usuario.getCorreo() == null || usuario.getCorreo().isBlank()) {
+            throw new RuntimeException("El correo es obligatorio.");
+        }
+        if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
+            throw new RuntimeException("La contraseña es obligatoria.");
+        }
+
+        // Validar longitud de los campos
+        if (usuario.getPassword().length() < 8) {
+            throw new RuntimeException("La contraseña debe tener al menos 8 caracteres.");
+        }
+        if (usuario.getNombreUsuario().length() > 50) {
+            throw new RuntimeException("El nombre de usuario no puede exceder 50 caracteres.");
+        }
+        if (usuario.getCorreo().length() > 100) {
+            throw new RuntimeException("El correo no puede exceder 100 caracteres.");
+        }
+
+        // Validar unicidad de nombre de usuario y correo
+        Optional<Usuario> usuarioExistente = usuarioRepository.findByNombreUsuario(usuario.getNombreUsuario());
+        if (usuarioExistente.isPresent()) {
+            throw new UsuarioExistenteException("El usuario '" + usuario.getNombreUsuario() + "' ya existe.");
+        }
+
+        Optional<Usuario> correoExistente = usuarioRepository.findByCorreo(usuario.getCorreo());
+        if (correoExistente.isPresent()) {
+            throw new UsuarioExistenteException("El correo '" + usuario.getCorreo() + "' ya está registrado.");
+        }
+
+        // Validar formato del correo
+        if (!usuario.getCorreo().matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
+            throw new RuntimeException("El formato del correo es inválido.");
+        }
+
+        // Validar número de teléfono (opcional)
+        if (usuario.getTelefono() != null && !usuario.getTelefono().matches("^[0-9]{10}$")) {
+            throw new RuntimeException("El número de teléfono debe tener 10 dígitos.");
+        }
+
+        // Guardar el usuario
         return usuarioRepository.save(usuario);
     }
 
