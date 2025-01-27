@@ -40,7 +40,13 @@ POST /auth/recuperar: Envía un código de recuperación al correo del usuario.*
     public ResponseEntity<List<Usuario>> listarUsuarios() {
         return ResponseEntity.ok(authService.listarUsuarios());
     }
-
+    
+ // Buscar un usuario por nombre de usuario
+    @GetMapping("/usuario")
+    public ResponseEntity<Usuario> obtenerUsuarioPorNombreUsuario(@RequestParam String nombreUsuario) {
+        Usuario usuario = authService.obtenerUsuarioPorNombreUsuario(nombreUsuario);
+        return ResponseEntity.ok(usuario);
+    }
     /**
      * Agregar un nuevo usuario
      */

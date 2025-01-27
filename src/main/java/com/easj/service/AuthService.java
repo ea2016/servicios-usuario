@@ -65,6 +65,10 @@ public class AuthService {
 	public List<Usuario> listarUsuarios() {
 		return usuarioRepository.findAll();
 	}
+	public Usuario obtenerUsuarioPorNombreUsuario(String nombreUsuario) {
+        return usuarioRepository.findByNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new UsuarioExistenteException("Usuario no encontrado con id Usuario: " + nombreUsuario));
+    }
 
 	public Usuario modificarUsuario(Long id, Usuario usuarioActualizado) {
 		// Buscar el usuario existente
@@ -123,7 +127,12 @@ public class AuthService {
 	}
 
 	public void eliminarUsuario(Long id) {
-		usuarioRepository.deleteById(id);
+	    // Verificar si el usuario existe
+	    if (!usuarioRepository.existsById(id)) {
+	        throw new RuntimeException("Usuario no encontrado con el ID: " + id);
+	    }
+	    // Eliminar el usuario
+	    usuarioRepository.deleteById(id);
 	}
 
 	public void enviarCodigoRecuperacion(String correo) {
