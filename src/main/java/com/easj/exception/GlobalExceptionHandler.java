@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UsuarioExistenteException.class)
-    public ResponseEntity<?> manejarUsuarioExistenteException(UsuarioExistenteException ex) {
+    @ExceptionHandler(UsuarioException.class)
+    public ResponseEntity<?> manejarUsuarioExistenteException(UsuarioException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
