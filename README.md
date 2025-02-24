@@ -1,2 +1,2 @@
 # servicios-residencia
-back del proyecto de ventas entre residencias
+back del proyecto para administracion de usuario
