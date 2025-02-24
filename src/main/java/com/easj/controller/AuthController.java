@@ -32,7 +32,7 @@ public class AuthController {
     /**
      * Listar todos los usuarios
      */
-    @GetMapping("/listar")
+    @GetMapping("/listarTodo")
     public ResponseEntity<List<Usuario>> listarUsuarios() {
         return ResponseEntity.ok(authService.listarUsuarios());
     }

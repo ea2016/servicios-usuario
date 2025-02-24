@@ -249,13 +249,8 @@ public class AuthService {
 		}
 
 		// 3. Obtener el tipo de usuario (rol)
-		String tipoUsuario = usuario.getRoles().stream().map(Rol::getNombre).findFirst().orElse("Usuario"); // Si no
-																											// tiene
-																											// roles,
-																											// asignamos
-																											// "Usuario"
-																											// por
-																											// defecto
+		String tipoUsuario = usuario.getRoles().stream().map(Rol::getNombre).findFirst().orElse("Usuario"); 
+		// Si no tiene roles, asignamos  "Usuario"  por defecto
 
 		// 4. Generar el token JWT
 		String token = generarToken(usuario, tipoUsuario);
