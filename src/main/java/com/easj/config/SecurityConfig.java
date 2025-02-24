@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para autenticación con JWT
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/auth/register").permitAll() // Acceso público
+                .requestMatchers("/auth/login", "/auth/recuperar").permitAll() // Acceso público
                 .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Agrega el filtro JWT antes de UsernamePasswordAuthenticationFilter

@@ -68,12 +68,9 @@ public class AuthController {
         return ResponseEntity.ok("Usuario eliminado con éxito");
     }
 
-    /**
-     * Recuperar contraseña
-     */
     @PostMapping("/recuperar")
-    public ResponseEntity<?> recuperarContrasena(@RequestBody String correo) {
+    public ResponseEntity<String> recuperarContraseña(@RequestParam String correo) {
         authService.enviarCodigoRecuperacion(correo);
-        return ResponseEntity.ok("Código de recuperación enviado");
+        return ResponseEntity.ok("Código de recuperación enviado si el correo es válido.");
     }
 }
