@@ -214,7 +214,7 @@ public class AuthService {
                 .claim("roles", tipoUsuario)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, getSigningKey()) // 🔥 Ahora usa Key correctamente
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512) 
                 .compact();
     }
 }
