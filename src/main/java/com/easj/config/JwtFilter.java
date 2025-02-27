@@ -1,7 +1,10 @@
 package com.easj.config;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,9 +48,8 @@ public class JwtFilter extends OncePerRequestFilter {
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("Usuario autenticado: " + userDetails.getUsername()); // Verificar autenticación
-        }else {
-            System.out.println("Token inválido o no presente"); // Si no llega un token válido
+        } else {
+            System.out.println("❌ Token inválido o no presente");
         }
 
         chain.doFilter(request, response);
@@ -65,14 +67,31 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
+                    .setAllowedClockSkewSeconds(300) // Permite hasta 5 minutos de diferencia
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-            System.out.println("Token Claims: " + claims);
-            return claims.getExpiration().after(new Date()); // Verifica si el token aún es válido
+
+            System.out.println("Hora actual del servidor de validación: " + System.currentTimeMillis());
+            System.out.println("Fecha de expiración del token: " + claims.getExpiration().getTime());
+            System.out.println("Token válido. Expira en: " + claims.getExpiration());
+
+            return claims.getExpiration().after(new Date());
+        } catch (ExpiredJwtException e) {
+            System.out.println(" El token ha expirado.");
+        } catch (UnsupportedJwtException e) {
+            System.out.println(" El token tiene un formato no soportado.");
+        } catch (MalformedJwtException e) {
+            System.out.println(" El token está mal formado.");
+        } catch (SecurityException e) { 
+            System.out.println(" Firma del token inválida o seguridad comprometida.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(" Token vacío o nulo.");
         } catch (Exception e) {
-            return false; // Token inválido
+            System.out.println(" Error desconocido al validar el token: " + e.getMessage());
+            e.printStackTrace();
         }
+        return false;
     }
 
     private UserDetails getUserDetailsFromToken(String token) {
