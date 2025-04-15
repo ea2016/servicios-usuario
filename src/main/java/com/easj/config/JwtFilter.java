@@ -1,7 +1,6 @@
 package com.easj.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,21 +32,30 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        return path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-resources")
+                || path.startsWith("/configuration")
+                || path.startsWith("/webjars")
+                || path.equals("/");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         String token = extractToken(request);
-        System.out.println("Token recibido en JwtFilter: " + token); // Verificar token recibido
-        
+        System.out.println("Token recibido en JwtFilter: " + token);
+
         if (token != null && validarToken(token)) {
             UserDetails userDetails = getUserDetailsFromToken(token);
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("Usuario autenticado: " + userDetails.getUsername()); // Verificar autenticación
-        }else {
-            System.out.println("Token inválido o no presente"); // Si no llega un token válido
+        } else {
+            System.out.println("❌ Token inválido o no presente");
         }
 
         chain.doFilter(request, response);
@@ -65,14 +73,26 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
+                    .setAllowedClockSkewSeconds(300)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-            System.out.println("Token Claims: " + claims);
-            return claims.getExpiration().after(new Date()); // Verifica si el token aún es válido
+
+            return claims.getExpiration().after(new Date());
+        } catch (ExpiredJwtException e) {
+            System.out.println("Token expirado.");
+        } catch (UnsupportedJwtException e) {
+            System.out.println("Formato de token no soportado.");
+        } catch (MalformedJwtException e) {
+            System.out.println("Token mal formado.");
+        } catch (SecurityException e) {
+            System.out.println("Firma del token inválida.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Token vacío o nulo.");
         } catch (Exception e) {
-            return false; // Token inválido
+            System.out.println("Error desconocido al validar token: " + e.getMessage());
         }
+        return false;
     }
 
     private UserDetails getUserDetailsFromToken(String token) {
@@ -83,7 +103,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 .getBody();
 
         String username = claims.getSubject();
-        
-        return new User(username, "", Collections.emptyList()); // Devuelve el usuario autenticado
+        return new User(username, "", Collections.emptyList());
     }
 }

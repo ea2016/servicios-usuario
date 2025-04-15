@@ -266,6 +266,10 @@ public class AuthService {
 	 * Generar token JWT
 	 */
 	public String generarToken(Usuario usuario, String tipoUsuario) {
+		System.out.println("Tiempo actual: " + System.currentTimeMillis());
+		System.out.println("jwtExpirationMs: " + jwtExpirationMs);
+		System.out.println("Expiración calculada: " + (System.currentTimeMillis() + jwtExpirationMs));
+		
 		return Jwts.builder().setSubject(usuario.getNombreUsuario()).claim("roles", tipoUsuario).setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
 				.signWith(getSigningKey(), SignatureAlgorithm.HS512).compact();

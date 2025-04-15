@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-	private final JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
 
     public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
@@ -24,17 +24,23 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para autenticación con JWT
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/auth/recuperar").permitAll() // Acceso público
-                .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
+                .requestMatchers(
+                    "/auth/login", 
+                    "/auth/recuperar",
+                    "/v3/api-docs/**",        // 👉 Permitir Swagger OpenAPI
+                    "/swagger-ui/**",         // 👉 Permitir Swagger UI
+                    "/swagger-ui.html"        // 👉 Permitir acceso principal de Swagger
+                ).permitAll() // Acceso público
+                .anyRequest().authenticated() // Todo lo demás requiere autenticación
             )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Agrega el filtro JWT antes de UsernamePasswordAuthenticationFilter
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Agrega el filtro JWT antes del filtro estándar
 
         return http.build();
     }
 
     @Bean
     PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Usar BCrypt para cifrar contraseñas
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
