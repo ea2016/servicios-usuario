@@ -6,13 +6,17 @@ import com.easj.model.Usuario;
 import com.easj.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -63,7 +67,7 @@ public class AuthService {
 		}
 		// Validar longitud de los campos
 		if (usuario.getPassword().length() < 8) {
-			throw new RuntimeException("La contraseña debe tener al menos 8 caracteres.");
+			throw new RuntimeException("La contraseña debe tener al menos 6 caracteres.");
 		}
 		// **Cifrar la contraseña antes de guardarla**
 		usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
@@ -186,6 +190,8 @@ public class AuthService {
 
 			// Guardar el código en la base de datos
 			usuario.setCodigoReinicio(codigo);
+			usuario.setCodigoRecuperacionExpiracion(LocalDateTime.now().plusMinutes(10)); // Código válido por 10
+																							// minutos
 			usuarioRepository.save(usuario);
 
 			// Enviar correo con el código de recuperación
@@ -238,19 +244,23 @@ public class AuthService {
 	 * Autenticar usuario y generar JWT + tipo de usuario
 	 */
 	public Map<String, Object> autenticarUsuario(String nombreUsuario, String password) {
+
+		// Validar antes de seguir
+		validarInputSeguridad(nombreUsuario);
+		validarInputSeguridad(password);
 		// 1. Buscar usuario en la base de datos
 		Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario)
-				.orElseThrow(() -> new UsuarioException("Usuario no encontrado"));
+		.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
 
 		// 2. Verificar si la contraseña ingresada coincide con la almacenada
 		// (encriptada)
 		if (!passwordEncoder.matches(password, usuario.getPassword())) {
-			throw new RuntimeException("Credenciales inválidas");
+			new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales invalidas");
 		}
 
 		// 3. Obtener el tipo de usuario (rol)
-		String tipoUsuario = usuario.getRoles().stream().map(Rol::getNombre).findFirst().orElse("Usuario"); 
-		// Si no tiene roles, asignamos  "Usuario"  por defecto
+		String tipoUsuario = usuario.getRoles().stream().map(Rol::getNombre).findFirst().orElse("Usuario");
+		// Si no tiene roles, asignamos "Usuario" por defecto
 
 		// 4. Generar el token JWT
 		String token = generarToken(usuario, tipoUsuario);
@@ -262,6 +272,18 @@ public class AuthService {
 		return response;
 	}
 
+	private void validarInputSeguridad(String input) {
+		if (input == null || input.isEmpty()) {
+			throw new IllegalArgumentException("El campo no puede estar vacío");
+		}
+
+		String inputLower = input.toLowerCase();
+		if (input.contains("'") || input.contains("\"") || input.contains("--") || inputLower.contains(" or ")
+				|| inputLower.contains(" and ") || inputLower.contains("=")) {
+			throw new IllegalArgumentException("Input inválido detectado");
+		}
+	}
+
 	/**
 	 * Generar token JWT
 	 */
@@ -269,9 +291,38 @@ public class AuthService {
 		System.out.println("Tiempo actual: " + System.currentTimeMillis());
 		System.out.println("jwtExpirationMs: " + jwtExpirationMs);
 		System.out.println("Expiración calculada: " + (System.currentTimeMillis() + jwtExpirationMs));
-		
+
 		return Jwts.builder().setSubject(usuario.getNombreUsuario()).claim("roles", tipoUsuario).setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
 				.signWith(getSigningKey(), SignatureAlgorithm.HS512).compact();
 	}
+
+	public boolean validarCodigoSeguridad(String correo, String codigo) {
+
+		Usuario usuario = usuarioRepository.findByCorreo(correo)
+				.orElseThrow(() -> new RuntimeException("Correo no encontrado."));
+		
+		if (usuario.getCodigoRecuperacionExpiracion().isBefore(LocalDateTime.now())) {
+			remove(usuario);
+			return false;
+		}
+		return usuario.getCodigoReinicio().equals(codigo);
+	}
+
+	public void cambiarPassword(String correo, String nuevaPassword) {
+		Usuario usuario = usuarioRepository.findByCorreo(correo)
+				.orElseThrow(() -> new RuntimeException("Usuario no encontrado con ese correo."));
+		usuario.setPassword(passwordEncoder.encode(nuevaPassword));
+		usuarioRepository.save(usuario);
+
+		remove(usuario);
+	}
+
+	//borrar código una vez cambiado el password
+	private void remove(Usuario usuario) {
+		usuario.setCodigoReinicio(null);
+		usuario.setCodigoRecuperacionExpiracion(null);
+		usuarioRepository.save(usuario);
+	}
+
 }

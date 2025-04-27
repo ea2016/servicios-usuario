@@ -27,9 +27,11 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/auth/login", 
                     "/auth/recuperar",
-                    "/v3/api-docs/**",        // 👉 Permitir Swagger OpenAPI
-                    "/swagger-ui/**",         // 👉 Permitir Swagger UI
-                    "/swagger-ui.html"        // 👉 Permitir acceso principal de Swagger
+                    "/auth/validarCodigo",
+                    "/auth/cambiarPassword",
+                    "/v3/api-docs/**",        // Permitir Swagger OpenAPI
+                    "/swagger-ui/**",         // Permitir Swagger UI
+                    "/swagger-ui.html"        // Permitir acceso principal de Swagger
                 ).permitAll() // Acceso público
                 .anyRequest().authenticated() // Todo lo demás requiere autenticación
             )

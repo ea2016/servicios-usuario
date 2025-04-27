@@ -3,6 +3,7 @@ package com.easj.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -27,6 +28,7 @@ public class Usuario {
     private String apellido;
     private String telefono;
     private String codigoReinicio;
+    private LocalDateTime codigoRecuperacionExpiracion;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

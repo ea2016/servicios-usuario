@@ -11,6 +11,9 @@ import com.easj.model.Usuario;
 import com.easj.service.interfaz.ProductoService;
 import com.easj.service.interfaz.SolicitudService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/producto")
 @RequiredArgsConstructor
+@Tag(name = "ProductoController", description = "Controlador para la gestión de productos y solicitudes de productos")
 public class ProductoController {
 
     private final ProductoService productoService;
@@ -28,6 +32,7 @@ public class ProductoController {
 
     // --- Sección de Productos ---
 
+    @Operation(summary = "Crear producto", description = "Crea un nuevo producto en el sistema.")
     @PostMapping
     public Producto crearProducto(@RequestBody ProductoRequest request) {
         Producto producto = new Producto();
@@ -37,11 +42,13 @@ public class ProductoController {
         return productoService.crearProducto(producto);
     }
 
+    @Operation(summary = "Listar productos", description = "Devuelve una lista de todos los productos registrados.")
     @GetMapping
     public List<Producto> listarProductos() {
         return productoService.listarProductos();
     }
 
+    @Operation(summary = "Eliminar producto", description = "Elimina un producto por su ID.")
     @DeleteMapping("/{id}")
     public void eliminarProducto(@PathVariable Long id) {
         productoService.eliminarProducto(id);
@@ -49,6 +56,7 @@ public class ProductoController {
 
     // --- Sección de Solicitudes ---
 
+    @Operation(summary = "Crear solicitud", description = "Crea una nueva solicitud de productos para un usuario.")
     @PostMapping("/solicitudes")
     public Solicitud crearSolicitud(@RequestBody SolicitudRequest request) {
         Solicitud solicitud = new Solicitud();
@@ -79,16 +87,19 @@ public class ProductoController {
         return solicitudService.crearSolicitud(solicitud);
     }
 
+    @Operation(summary = "Listar solicitudes pendientes", description = "Devuelve una lista de todas las solicitudes pendientes.")
     @GetMapping("/solicitudes/pendientes")
     public List<Solicitud> listarSolicitudesPendientes() {
         return solicitudService.listarSolicitudesPendientes();
     }
 
+    @Operation(summary = "Entregar todos los productos", description = "Marca todos los productos de una solicitud como entregados.")
     @PostMapping("/solicitudes/{solicitudId}/entregar-todo")
     public Solicitud entregarTodosLosProductos(@PathVariable Long solicitudId) {
         return solicitudService.entregarTodosLosProductos(solicitudId);
     }
 
+    @Operation(summary = "Entregar producto específico", description = "Entrega una cantidad específica de un producto de una solicitud.")
     @PostMapping("/solicitudes/{solicitudId}/items/{itemId}/entregar")
     public Solicitud entregarProducto(
             @PathVariable Long solicitudId,
@@ -98,6 +109,7 @@ public class ProductoController {
         return solicitudService.entregarProducto(solicitudId, itemId, entregaRequest.getCantidadEntregada());
     }
 
+    @Operation(summary = "Listar solicitudes por usuario", description = "Devuelve todas las solicitudes realizadas por un usuario específico.")
     @GetMapping("/solicitudes/usuario/{usuarioId}")
     public List<Solicitud> listarSolicitudesPorUsuario(@PathVariable Long usuarioId) {
         Usuario usuario = new Usuario();
