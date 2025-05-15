@@ -16,4 +16,5 @@ public interface SolicitudService {
     Solicitud entregarTodosLosProductos(Long solicitudId);
     
     List<Solicitud> listarSolicitudesPorUsuario(Usuario usuario);
+
 }

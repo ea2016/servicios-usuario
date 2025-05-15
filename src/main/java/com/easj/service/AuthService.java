@@ -212,7 +212,7 @@ public class AuthService {
 			helper.setTo(correo);
 			helper.setSubject("🔐 Recuperación de contraseña");
 
-			// 🔹 Aquí insertamos el diseño en HTML
+			// Aquí insertamos el diseño en HTML
 			String contenidoHtml = "<!DOCTYPE html>" + "<html>" + "<head>" + "<meta charset='UTF-8'>" + "<style>"
 					+ "body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; padding: 20px; }"
 					+ ".container { max-width: 500px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }"
@@ -255,7 +255,7 @@ public class AuthService {
 		// 2. Verificar si la contraseña ingresada coincide con la almacenada
 		// (encriptada)
 		if (!passwordEncoder.matches(password, usuario.getPassword())) {
-			new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales invalidas");
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales invalidas");
 		}
 
 		// 3. Obtener el tipo de usuario (rol)
@@ -269,6 +269,7 @@ public class AuthService {
 		Map<String, Object> response = new HashMap<>();
 		response.put("token", token);
 		response.put("tipoUsuario", tipoUsuario);
+		response.put("usuarioId", usuario.getNombreUsuario());
 		return response;
 	}
 

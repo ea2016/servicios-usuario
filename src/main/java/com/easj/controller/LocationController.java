@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,7 +36,7 @@ public class LocationController {
 
     @Operation(summary = "Obtener ubicaciones por usuario", description = "Devuelve todas las ubicaciones registradas de un usuario específico por su ID.")
     @GetMapping("/buscarUsuario/{usuarioId}")
-    public ResponseEntity<List<LocationRequest>> obtenerUbicacionesPorUsuario(@PathVariable Long usuarioId) {
+    public ResponseEntity<List<LocationRequest>> obtenerUbicacionesPorUsuario(@PathVariable String usuarioId) {
         List<LocationRequest> location = locationService.obtenerUbicacionesPorUsuario(usuarioId);
         return ResponseEntity.ok(location);
     }
@@ -44,10 +44,10 @@ public class LocationController {
     @Operation(summary = "Obtener ubicaciones por usuario y fecha", description = "Devuelve las ubicaciones de un usuario en una fecha específica.")
     @GetMapping("/buscarUsuarioFecha/{usuarioId}/fecha")
     public ResponseEntity<?> obtenerUbicacionesPorUsuarioYFecha(
-            @PathVariable Long usuarioId,
+            @PathVariable String usuarioId,
             @RequestParam String fecha) {
         try {
-            LocalDate fechaConsulta = LocalDate.parse(fecha.trim());
+        	LocalDateTime fechaConsulta = LocalDateTime.parse(fecha.trim());
             List<LocationRequest> locations = locationService.obtenerUbicacionesPorUsuarioYFecha(usuarioId, fechaConsulta);
 
             if (locations.isEmpty()) {
@@ -60,20 +60,4 @@ public class LocationController {
         }
     }
 
-    @Operation(summary = "Calcular tiempo trabajado", description = "Calcula el tiempo total trabajado por todos los usuarios en una fecha específica basándose en las ubicaciones registradas.")
-    @GetMapping("/tiempoTrabajo")
-    public ResponseEntity<String> calcularTiempoTrabajo(@RequestParam String fecha) {
-        LocalDate fechaConsulta = LocalDate.parse(fecha.trim());
-
-        try {
-            Duration tiempoTotal = locationService.calcularTiempoTrabajo(fechaConsulta);
-
-            long horas = tiempoTotal.toHours();
-            long minutos = tiempoTotal.toMinutes() % 60;
-
-            return ResponseEntity.ok("Tiempo total trabajado el " + fecha + ": " + horas + "h " + minutos + "m");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 }

@@ -20,4 +20,7 @@ public class Producto {
 
     @Column(name = "stock_disponible", nullable = false)
     private Integer stockDisponible = 0;
+    
+    @Column(nullable = false, length = 100)
+    private String categoria;
 }

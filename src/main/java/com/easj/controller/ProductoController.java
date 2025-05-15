@@ -2,7 +2,9 @@ package com.easj.controller;
 
 import com.easj.dto.ProductoRequest;
 import com.easj.dto.SolicitudRequest;
+import com.easj.dto.SolicitudResponse;
 import com.easj.dto.SolicitudItemRequest;
+import com.easj.dto.SolicitudItemResponse;
 import com.easj.dto.EntregaRequest;
 import com.easj.model.Producto;
 import com.easj.model.Solicitud;
@@ -58,10 +60,11 @@ public class ProductoController {
 
     @Operation(summary = "Crear solicitud", description = "Crea una nueva solicitud de productos para un usuario.")
     @PostMapping("/solicitudes")
-    public Solicitud crearSolicitud(@RequestBody SolicitudRequest request) {
+    public SolicitudResponse crearSolicitud(@RequestBody SolicitudRequest request) {
+        // 1. Construir la entidad Solicitud
         Solicitud solicitud = new Solicitud();
         Usuario usuario = new Usuario();
-        usuario.setId(request.getUsuarioId());
+        usuario.setNombreUsuario(request.getUsuarioId());
         solicitud.setUsuario(usuario);
         solicitud.setEstado("PENDIENTE");
         solicitud.setFechaSolicitud(LocalDateTime.now());
@@ -84,7 +87,32 @@ public class ProductoController {
 
         solicitud.setItems(items);
 
-        return solicitudService.crearSolicitud(solicitud);
+        // 2. Guardar la solicitud completa
+        Solicitud saved = solicitudService.crearSolicitud(solicitud);
+
+        // 3. Convertir a DTO limpio
+        return mapToResponse(saved);
+    }
+    
+    private SolicitudResponse mapToResponse(Solicitud solicitud) {
+        SolicitudResponse response = new SolicitudResponse();
+        response.setId(solicitud.getId());
+        response.setEstado(solicitud.getEstado());
+        response.setFechaSolicitud(solicitud.getFechaSolicitud());
+        response.setNombreUsuario(solicitud.getUsuario().getNombreUsuario());
+
+        List<SolicitudItemResponse> items = solicitud.getItems().stream().map(item -> {
+            SolicitudItemResponse itemResponse = new SolicitudItemResponse();
+            itemResponse.setProductoId(item.getProducto().getId());
+            itemResponse.setNombreProducto(item.getProducto().getNombre());
+            itemResponse.setCantidadSolicitada(item.getCantidadSolicitada());
+            itemResponse.setCantidadEntregada(item.getCantidadEntregada());
+            itemResponse.setEstadoEntrega(item.getEstadoEntrega());
+            return itemResponse;
+        }).toList();
+
+        response.setItems(items);
+        return response;
     }
 
     @Operation(summary = "Listar solicitudes pendientes", description = "Devuelve una lista de todas las solicitudes pendientes.")

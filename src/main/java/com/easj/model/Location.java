@@ -2,32 +2,33 @@ package com.easj.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "ubicaciones") // Nombre de la tabla en la BD
 @Data
+@Entity
+@Table(name = "ubicaciones")
 public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private double latitud;
+    private Double latitud;
 
-    @Column(nullable = false)
-    private double longitud;
+    private Double longitud;
 
-    @ManyToOne // Relación con usuario
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", referencedColumnName = "nombre_usuario")
     private Usuario usuario;
 
-    @Column(nullable = false)
+    @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;
-
+    
     @PrePersist
-    protected void prePersist() {
-        this.fechaRegistro = LocalDateTime.now();
+    public void prePersist() {
+        if (fechaRegistro == null) {
+            fechaRegistro = LocalDateTime.now();
+        }
     }
 }

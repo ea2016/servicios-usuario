@@ -5,6 +5,6 @@ import java.util.List;
 
 @Data
 public class SolicitudRequest {
-    private Long usuarioId;
+    private String usuarioId;
     private List<SolicitudItemRequest> items;
 }
