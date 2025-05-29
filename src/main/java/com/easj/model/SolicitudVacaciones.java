@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "vacaciones_solicitudes")
+@Table(name = "solicitudes_vacaciones")
 @Data
 public class SolicitudVacaciones {
 
